@@ -6,91 +6,7 @@
 
 (function () {
 
-  var SEARCHWORDS = [
-    'digital',
-    'digitale',
-    'digitales',
-    'digitalisation',
-    'digitaux'
-  ];
-
-  var PROHIBITEDWORDS = [
-      // The more at the end of this array the object is, the highest priority it has
-      {
-        queries: [
-          /digital/,
-          /digitaux/
-        ],
-        responses: [
-          'Vive le #digital !',
-          'Le #digital c\'est la vie.',
-          'Le #digital est notre ami.',
-          'Si y\'a du #digital, c\'est légal',
-          'Un #digital, et ça repart !',
-          '#Digital un jour, #digital toujours !',
-          'Tu l\'as dit, gital !',
-          'Que la force du #digital soit avec toi !',
-          'Un certain doigté dans votre tweet !',
-          '#Digitalement vôtre.',
-          '#Digitalisatioooon ! /o/',
-          'On croise les doigts pour que le #digital perdure !',
-          'Oh, on a mis le doigt sur quelque chose?',
-          'Avec le #digital, non seulement on peut, mais on doigt.',
-          '- Vous voulez du #digital? - Juste un doigt.',
-          'Avec le #digital, on se met le doigt dans l\'œil',
-          'Le #digital, c\'est mon p\'tit doigt qui me l\'a dit !',
-          'Le #digital vous obéit au doigt et à l\'œil !',
-          'Aujourd\'hui, grâce à vous, le #digital est montré du doigt.',
-          'Un effort, vous touchez du doigt le numérique !',
-          'On peut aussi ne rien faire de ses dix doigts, avec le #digital',
-          'Le #digital et le numérique, ils sont comme les doigts de la main',
-          'Attention, d\'ici je peux voir vos doigts de fée du #digital ;)',
-          'Là, clairement, vous mettez le doigt sur la plaie.',
-          'Popopo ! Carton jaune monsieur l\'arbitre !',
-          'Le #digital, vous connaissez ça sur le bout des doigts.',
-          '"Le #digital? C\'est trop génial !" - Louis XVI',
-          '"Le #digital? SWAG !" - Victor Hugo',
-          'Ne mets pas tes doigts dans le #digital, tu risques de te faire pincer très fort !',
-          'Militons pour la défense des doigts de l\'Homme',
-          'Le #digital, le travail d\'un orthopédiste main ?',
-          'Alors, on laisse son empreinte dans le #digital ?',
-          'Le #digital, le travail d\'un dermatologue ?',
-          'Vous travaillez sur le digital d\'une main de maître.',
-          'On est passé à deux doigts du numérique ;)'
-        ]
-      },
-      {
-        queries: [
-          /transformation\sdigital/,
-          /#transformationdigital/
-        ],
-        responses: [
-          'https://i.imgur.com/38Cs6G0.jpg',
-          'https://i.imgur.com/hIwO2mF.jpg',
-          'https://i.imgur.com/YALJMd8.jpg'
-        ]
-      },
-      {
-        queries: [
-          /campagne\sdigital/
-        ],
-        responses: [
-          'https://pbs.twimg.com/profile_banners/920311532382277632/1508254739'
-        ]
-      }
-    ],
-
-    EXCEPTIONS = [
-      /dispositifs?\sdigital/,
-      /empreintes?\sdigital/,
-      /affichages?\sdigital/,
-      /Digital/,
-      /[_.\/#]digital/,
-      /digital\snative/,
-      /@\w*digital/
-    ],
-
-    EMOJIS = ['👐', '🙌', '👏', '🙏', '🤝', '👍', '👎', '👊', '✊', '🤛', '🤜', '🤞', '✌', '🤘', '👌', '👈', '👉', '👆', '👇', '☝', '✋', '🤚', '🖐', '🖖', '👋', '🤙', '✍', '💅', '🤳', '🤗'];
+  var config = require('config.json');
 
   //the twitter api module
   var ntwitter = require('ntwitter'),
@@ -101,10 +17,10 @@
 
     //create an object using the keys we just determined
     twitterAPI = new ntwitter({
-      "consumer_key": process.env.CONSUMER_TOKEN,
-      "consumer_secret": process.env.CONSUMER_SECRET,
-      "access_token_key": process.env.ACCESS_TOKEN_KEY,
-      "access_token_secret": process.env.ACCESS_TOKEN_SECRET
+      "consumer_key": config.CONSUMER_TOKEN,
+      "consumer_secret": config.CONSUMER_SECRET,
+      "access_token_key": config.ACCESS_TOKEN_KEY,
+      "access_token_secret": config.ACCESS_TOKEN_SECRET
     });
 
   //check if we have the rights to do anything
@@ -117,8 +33,6 @@
       //the credentials check returns the username, so we can store it here
       botUsername = userdata.screen_name;
       console.log("logged in as [" + userdata.screen_name + "]");
-
-      //start listening to tweets that contain the bot's username using the streaming api
       initStreaming();
     }
   });
@@ -129,6 +43,7 @@
 
   function containsRegExp(text, array) {
     return array.some(function (rx) {
+      rx = new RegExp(rx.replace(/\\(?![sw])/g, ""));
       return rx.test(text)
     });
   }
@@ -143,44 +58,12 @@
           text = data.text;
 
         // If tweet contains any 'digital' subject
-        if (containsRegExp(text, PROHIBITEDWORDS[0].queries)) {
+        if (containsRegExp(text, config.PROHIBITEDWORDS[0].queries)) {
 
           //a few checks to see if we should reply
           if (data.user.screen_name.toLowerCase() !== botUsername.toLowerCase() &&
             // if it wasn't sent by the bot itself
             data.retweeted_status === undefined) {
-
-            /*
-            // RETWEET
-            // and if it isn't a retweet of one of our tweets
-            console.log("[" + data.id_str + "] tweet from [" + data.user.screen_name + "]");
-            // retweet
-            console.log("Trying to retweet [" + data.id + "]");
-            twitterAPI.retweetStatus(data.id_str,
-              function (error, statusData) {
-                //when we got a response from twitter, check for an error (which can occur pretty frequently)
-                if (error) {
-                  errorTwitter(error, statusData);
-                } else {
-                  //if we could send the tweet just fine
-                  console.log("[" + statusData.retweeted_status.id_str + "] ->retweeted from [" + statusData.retweeted_status.user.screen_name + "]");
-                  //check if there's "[TL]" in the name of the but
-                  var tweetLimitCheck = statusData.user.name.match(/(\[TL\]) (.*)/);
-                  //if we just got out of tweet limit, we need to update the bot's name
-                  if (tweetLimitCheck !== null) {
-                    //DO EET
-                    twitterAPI.updateProfile({name: tweetLimitCheck[2]}, function (error, data) {
-                      if (error) {
-                        console.log("error while trying to change username (going OUT of TL)");
-                      } else {
-                        hasNotifiedTL = true;
-                        console.log("gone OUT of tweet limit");
-                      }
-                    });
-                  }
-                }
-              }
-            );*/
 
             var followers = (data.user && data.user.followers_count) || 0,
               minfollowers = 100,
@@ -196,13 +79,13 @@
             console.log((data.user && '@' + data.user.name) + ' (' + followers + ' follows)');
 
             if (!random ||
-              data.user && data.user.name === '\u004e\u0069\u006a\u0069\u005f\u0044\u0069\u0067\u0069\u0074\u0061\u006c') {
+              data.user && contains(data.user.name, config.PRIORITY_ACCOUNTS)) {
 
               // If tweet doesn't contain any of the excluded terms
-              if (!containsRegExp(text, EXCEPTIONS)) {
+              if (!containsRegExp(text, config.EXCEPTIONS)) {
 
-                for (var i = 0; i < PROHIBITEDWORDS.length; i++) {
-                  var item = PROHIBITEDWORDS[i];
+                for (var i = 0; i < config.PROHIBITEDWORDS.length; i++) {
+                  var item = config.PROHIBITEDWORDS[i];
                   if (containsRegExp(text, item.queries)) {
                     result = item.responses[Math.floor(Math.random() * item.responses.length)];
                   }
@@ -210,7 +93,7 @@
 
                 // TWEET
                 console.log('text:', data.text);
-                var tweetDone = '@' + data.user.screen_name + " " + result + ' \n' + EMOJIS[Math.floor(Math.random() * EMOJIS.length)] + ' http://www.academie-francaise.fr/digital ' + EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+                var tweetDone = '@' + data.user.screen_name + " " + result + ' \n' + config.EMOJIS[Math.floor(Math.random() * config.EMOJIS.length)] + ' http://www.academie-francaise.fr/digital ' + config.EMOJIS[Math.floor(Math.random() * config.EMOJIS.length)];
                 setTimeout(function () {
                   //reply to the tweet that mentionned us
                   twitterAPI.updateStatus(tweetDone.substring(0, 139), {in_reply_to_status_id: data.id_str},
@@ -278,7 +161,7 @@
 
   function initStreaming() {
     //initialize the stream and everything else
-    twitterAPI.stream('statuses/filter', {track: SEARCHWORDS.join(',')}, streamCallback);
+    twitterAPI.stream('statuses/filter', {track: config.SEARCHWORDS.join(',')}, streamCallback);
   }
 
 })();

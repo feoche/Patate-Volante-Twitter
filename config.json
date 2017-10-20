@@ -1,0 +1,32 @@
+{
+  "ACCESS_TOKEN_KEY": "PUT_YOUR_TWITTER_ACCESS_TOKEN_KEY_HERE",
+  "ACCESS_TOKEN_SECRET": "PUT_YOUR_TWITTER_ACCESS_TOKEN_SECRET_HERE",
+  "CONSUMER_SECRET": "PUT_YOUR_TWITTER_CONSUMER_SECRET_HERE",
+  "CONSUMER_TOKEN": "PUT_YOUR_CONSUMER_TOKEN_KEY_HERE",
+  "SEARCHWORDS": [
+    "galette",
+    "saucisse",
+    "sel",
+    "stunfest"
+  ],
+  "PROHIBITEDWORDS": [
+    {
+      "queries": [
+        "PUT_YOUR_ESCAPED_REGEX_HERE (e.g. \\@\\\\w\\*stunfest)"
+      ],
+      "responses": [
+        "PUT_YOUR_RESPONSE_TWEETS_HERE"
+      ]
+    }
+  ],
+  "EXCEPTIONS": [
+    "PUT_YOUR_ESCAPED_REGEX_HERE (e.g. \\@\\\\w\\*stunfest)"
+  ],
+  "EMOJIS": [
+    "PUT_YOUR_EMOJIS_HERE",
+    "👐","🙌","👏","🙏","🤝","👍","👎","👊","✊","🤛","🤜","🤞","✌","🤘","👌","👈","👉","👆","👇","☝","✋","🤚","🖐","🖖","👋","🤙","✍","💅","🤳","🤗"
+  ],
+  "PRIORITY_ACCOUNTS" : [
+    "PUT_YOUR_FAVORITE_ACCOUNTS"
+  ]
+}
