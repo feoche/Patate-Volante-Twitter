@@ -103,7 +103,8 @@ const data = {
     `http://www.cnrtl.fr/definition/digital`,
     `http://toucher.rectal.digital`,
     `https://www.youtube.com/watch?v=2N7Qea39Ego`,
-    `Même au Québec : http://gdt.oqlf.gouv.qc.ca/ficheOqlf.aspx?Id_Fiche=2654099`
+    `Même au Québec : http://gdt.oqlf.gouv.qc.ca/ficheOqlf.aspx?Id_Fiche=2654099`,
+    `https://www.bbc.com/news/av/embed/p06n111v/45760646`
   ],
 
   MINFOLLOWERS : 100,
