@@ -4,19 +4,16 @@
   "description": "Twitter bot that listens for the word \"digital\" & replies to it w/ a specific answer.",
   "main": "bot.js",
   "scripts": {
-    "start": "node -r @std/esm bot.js",
+    "start": "node -r esm bot.js",
     "lint": "eslint bot.js",
     "precommit": "lint"
   },
-  "@std/esm": {
-    "esm": "all"
-  },
   "engines": {
-    "node": "^8.9.0",
+    "node": ">=8.9.0",
     "npm": ">=5"
   },
   "dependencies": {
-    "@std/esm": "^0.12.4",
+    "esm": "^3.2.16",
     "express": "^4.16.3",
     "http": "0.0.0",
     "languagedetect": "^1.1.1",
