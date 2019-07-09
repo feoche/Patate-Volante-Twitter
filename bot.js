@@ -24,7 +24,9 @@ let twitterAPI = new Twitter({
 let port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080
 let ipadr = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0'
 
-console.log(`Logged in`)
+console.log(
+  `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+  `Logged in`)
 initStreaming()
 
 function containsRegExp (text, array) {
@@ -43,15 +45,21 @@ function pickRand (data) {
 }
 
 function streamCallback (stream) {
-  console.log(`streaming`)
+  console.log(
+    `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+    `streaming`)
 
   let server = http.createServer(express())
   let socket = io.listen(server)
 
-  socket.on('connection', () => console.log('Launchpad connected'))
+  socket.on('connection', () => console.log(
+    `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+    'Launchpad connected'))
 
   server.listen(port, ipadr)
-  console.log(port + ':' + ipadr)
+  console.log(
+    `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+    port + ':' + ipadr)
 
   stream.on(`data`, tweet => {
     let sent = false
@@ -75,10 +83,9 @@ function streamCallback (stream) {
       let textLog = tweet.text.replace('\n', '').trim().replace(/(\r\n\t|\n|\r\t)/gm, '').replace(/\shttp.*/g, '').replace(/digital/g, '\x1b[96mdigital\x1b[0m')
       console.info(
         '\x1b[96m', ('[' + new Date().toLocaleTimeString() + ']').padStart(10),
-        '\x1b[94m', ('[@' + userName + ']').padStart(20),                                                                                                                                         // User
-        '\x1b[91m', ('[' + followers + 'f-' + ((1 / probability) * 100).toFixed(0) + '%]').padStart(15),                                                                                          // Followers + Probability
-        '\x1b[0m', textLog.padEnd(125),                                                                                                                                                           // Title
-        ((tweet.entities && tweet.entities.urls && tweet.entities.urls[0] && tweet.entities.urls[0].url) || 'http://' + text.split(/http/)[text.split(/http/).length - 1] || '').padEnd(40)   // URL
+        '\x1b[94m', ('[@' + userName + ']').padStart(20),                                                // User
+        '\x1b[91m', ('[' + followers + 'f-' + ((1 / probability) * 100).toFixed(0) + '%]').padStart(15), // Followers + Probability
+        '\x1b[0m', textLog.padEnd(125)                                                                   // Title
       );
 
       if (!pickRand(probability)) {
@@ -99,7 +106,9 @@ function streamCallback (stream) {
             },
             (error) => {
               if (error) {
-                console.error('Error: ', error)
+                console.error(
+                  `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+                  'Error: ', error)
               } else {
                 socket.emit('new', {
                   severity: 2,
@@ -140,7 +149,9 @@ function streamCallback (stream) {
 }
 
 function onStreamError (err) {
-  console.error(`Error (${err}) - Reloading...`)
+  console.error(
+    `\x1b[96m`, (`[` + new Date().toLocaleTimeString() + `]`).padStart(10),
+    `Error (${err}) - Reloading...`)
   setTimeout(initStreaming, 10000)
 }
 
