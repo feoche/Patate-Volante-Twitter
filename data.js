@@ -104,6 +104,7 @@ const data = {
     `http://toucher.rectal.digital`,
     `https://www.youtube.com/watch?v=2N7Qea39Ego`,
     `Même au Québec : http://gdt.oqlf.gouv.qc.ca/ficheOqlf.aspx?Id_Fiche=2654099`,
+    `https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000042255059`,
     `https://ichef.bbci.co.uk/images/ic/1024x576/p06n120d.jpg`
   ],
 
